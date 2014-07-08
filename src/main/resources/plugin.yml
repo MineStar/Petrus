@@ -1,0 +1,4 @@
+name: Petrus
+main: de.minestar.petrus.core.PetrusCore
+version: ${pom.version}
+depend: [MineStarLibrary, MinestarCore]
