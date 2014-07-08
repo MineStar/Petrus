@@ -28,9 +28,25 @@ public class PetrusConfiguration {
         // For Serialization
     }
 
+    private StartPosition spawnPosition;
+    private int spawnRadius;
+    private String spawnWorldName;
+
     private List<StartPosition> startPositions;
 
     public List<StartPosition> startPositions() {
         return startPositions;
+    }
+
+    public StartPosition spawnPosition() {
+        return spawnPosition;
+    }
+    
+    public int spawnRadius() {
+        return spawnRadius;
+    }
+    
+    public String spawnWorldName() {
+        return spawnWorldName;
     }
 }

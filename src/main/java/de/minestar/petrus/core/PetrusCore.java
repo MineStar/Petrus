@@ -25,10 +25,12 @@ import java.io.Reader;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.plugin.PluginManager;
 
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.petrus.configuration.PetrusConfiguration;
+import de.minestar.petrus.listener.SpawnProtectionListener;
 
 public class PetrusCore extends AbstractCore {
 
@@ -53,5 +55,12 @@ public class PetrusCore extends AbstractCore {
         }
         // TODO Auto-generated method stub
         return super.loadingConfigs(dataFolder);
+    }
+
+    @Override
+    protected boolean registerEvents(PluginManager pm) {
+        pm.registerEvents(new SpawnProtectionListener(CONFIG.spawnWorldName(), CONFIG.spawnPosition(), CONFIG.spawnRadius()), this);
+
+        return true;
     }
 }
