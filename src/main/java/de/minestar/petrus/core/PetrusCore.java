@@ -18,13 +18,40 @@
 
 package de.minestar.petrus.core;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+
 import de.minestar.minestarlibrary.AbstractCore;
+import de.minestar.minestarlibrary.utils.ConsoleUtils;
+import de.minestar.petrus.configuration.PetrusConfiguration;
 
 public class PetrusCore extends AbstractCore {
 
     public final static String NAME = "Petrus";
 
+    public static PetrusConfiguration CONFIG;
+
     public PetrusCore() {
         super(NAME);
+    }
+
+    @Override
+    protected boolean loadingConfigs(File dataFolder) {
+
+        try (Reader reader = new FileReader(new File(dataFolder, "generalConfig.json"))) {
+            Gson gson = new GsonBuilder().create();
+            CONFIG = gson.fromJson(reader, PetrusConfiguration.class);
+            System.out.println(CONFIG.startPositions());
+        } catch (IOException e) {
+            ConsoleUtils.printException(e, NAME, "Error loading generalConfig.json");
+            return false;
+        }
+        // TODO Auto-generated method stub
+        return super.loadingConfigs(dataFolder);
     }
 }
