@@ -31,11 +31,13 @@ public class Team {
     private String leaderName;
     private Set<String> members;
     private Set<String> aspirants;
+    private Set<String> pendingMembers;
 
     private Team() {
         // For Serialization
         members = new HashSet<>();
         aspirants = new HashSet<>();
+        pendingMembers = new HashSet<>();
     }
 
     /**
@@ -125,13 +127,14 @@ public class Team {
     public Iterable<String> aspirants() {
         return aspirants;
     }
-    
+
     /**
      * Check, if the player is member of this team.
      * 
      * @param playerName
      *            The playername
-     * @return <code>true</code> if, and only if, the player is member of this team. Otherwise <code>false</code>
+     * @return <code>true</code> if, and only if, the player is member of this
+     *         team. Otherwise <code>false</code>
      */
     public boolean isMember(String playerName) {
         return playerName.equals(leaderName) || members.contains(playerName);
@@ -162,9 +165,23 @@ public class Team {
         return true;
     }
 
+    public boolean isPendingMember(String playerName) {
+        return this.pendingMembers.contains(playerName);
+    }
+
+    public void addToPendingMembers(String offlinePlayerName) {
+        this.aspirants.remove(offlinePlayerName);
+        this.pendingMembers.add(offlinePlayerName);
+        this.members.add(offlinePlayerName);
+    }
+
+    public void finishedPendingMember(String playerName) {
+        this.pendingMembers.remove(playerName);
+    }
+
     @Override
     public String toString() {
-        return "Team [name=" + name + ", startPosition=" + startPosition + ", leaderName=" + leaderName + ", members=" + members + ", aspirants=" + aspirants + "]";
+        return "Team [name=" + name + ", startPosition=" + startPosition + ", leaderName=" + leaderName + ", members=" + members + ", aspirants=" + aspirants + ", pendingAccepted=" + pendingMembers + "]";
     }
 
 }

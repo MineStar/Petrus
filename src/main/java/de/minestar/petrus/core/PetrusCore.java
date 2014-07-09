@@ -33,6 +33,7 @@ import de.minestar.minestarlibrary.commands.CommandList;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.petrus.commands.PetrusCommand;
 import de.minestar.petrus.configuration.PetrusConfiguration;
+import de.minestar.petrus.listener.JoinListener;
 import de.minestar.petrus.listener.SpawnProtectionListener;
 import de.minestar.petrus.team.TeamManager;
 
@@ -47,6 +48,8 @@ public class PetrusCore extends AbstractCore {
     public static TeamManager TEAM_MANAGER;
 
     public static Gson JSON;
+
+    public static final String META_DATA_INVITATION_ACCEPTED = "acceptedInvitation";
 
     public PetrusCore() {
         super(NAME);
@@ -83,6 +86,7 @@ public class PetrusCore extends AbstractCore {
     @Override
     protected boolean registerEvents(PluginManager pm) {
         pm.registerEvents(new SpawnProtectionListener(CONFIG.spawnWorldName(), CONFIG.spawnPosition(), CONFIG.spawnRadius()), this);
+        pm.registerEvents(new JoinListener(), this);
 
         return true;
     }

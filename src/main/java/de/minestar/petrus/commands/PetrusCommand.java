@@ -21,17 +21,12 @@ package de.minestar.petrus.commands;
 import static de.minestar.petrus.core.PetrusCore.TEAM_MANAGER;
 
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import de.minestar.minestarlibrary.commands.AbstractExtendedCommand;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
-import de.minestar.petrus.common.StartPosition;
 import de.minestar.petrus.common.Team;
 import de.minestar.petrus.core.PetrusCore;
 
@@ -91,7 +86,7 @@ public class PetrusCommand extends AbstractExtendedCommand {
             TEAM_MANAGER.setTeamLeader(player, team);
             PlayerUtils.sendSuccess(player, pluginName, "Du bist nun Leader vom Team '" + team.getName() + "' !");
             PlayerUtils.sendInfo(player, pluginName, "Mit '/petrus accept NAME' kannst du Einladungen annehmen.");
-            startGame(player, team);
+            TEAM_MANAGER.startGame(player, team);
         }
     }
 
@@ -102,12 +97,12 @@ public class PetrusCommand extends AbstractExtendedCommand {
 
         Player teamLeader = Bukkit.getPlayerExact(team.getLeaderName());
         if (teamLeader != null && teamLeader.isOnline()) {
-            PlayerUtils.sendInfo(player, pluginName, "Spieler '" + player.getName() + "' moechte deinem Team beitreten.");
-            PlayerUtils.sendInfo(player, pluginName, "Akzeptiere seine Anfrage mit '/petrus accept " + player.getName() + "'");
+            PlayerUtils.sendInfo(teamLeader, pluginName, "Spieler '" + player.getName() + "' moechte deinem Team beitreten.");
+            PlayerUtils.sendInfo(teamLeader, pluginName, "Akzeptiere seine Anfrage mit '/petrus accept " + player.getName() + "'");
         }
     }
 
-    private void acceptInvitation(Player player, String playerName) {
+    private void acceptInvitation(Player player, String newMemberName) {
         List<Team> teams = TEAM_MANAGER.getTeams();
         Team team = null;
         for (Team tmp : teams) {
@@ -122,43 +117,22 @@ public class PetrusCommand extends AbstractExtendedCommand {
             return;
         }
 
-        if (!team.isAspirant(playerName)) {
-            PlayerUtils.sendError(player, pluginName, "Spieler '" + playerName + "' ist kein Anwärter!");
+        if (!team.isAspirant(newMemberName)) {
+            PlayerUtils.sendError(player, pluginName, "Spieler '" + newMemberName + "' ist kein Anwärter!");
             return;
         }
 
-        TEAM_MANAGER.convertToMember(playerName, team);
-        PlayerUtils.sendSuccess(player, pluginName, "Spieler '" + playerName + "' ist nun Teammitglied");
+        TEAM_MANAGER.convertToMember(newMemberName, team);
+        PlayerUtils.sendSuccess(player, pluginName, "Spieler '" + newMemberName + "' ist nun Teammitglied");
 
-        Player newMember = Bukkit.getPlayerExact(playerName);
+        Player newMember = Bukkit.getPlayerExact(newMemberName);
+
         if (newMember != null && newMember.isOnline()) {
             PlayerUtils.sendSuccess(newMember, pluginName, "Deine Einladung wurde akzeptiert!");
-            startGame(newMember, team);
-        } else if (newMember != null) {
-            // set meta data for player to know at his next login, that his
-            // invitation was accepted
-            newMember.setMetadata("acceptedInvitation", new FixedMetadataValue(PetrusCore.PLUGIN, team.getName()));
+            TEAM_MANAGER.startGame(newMember, team);
+        } else {
+            TEAM_MANAGER.acceptOfflineMember(newMemberName, team);
         }
-
     }
 
-    private void startGame(Player player, Team team) {
-        StartPosition startPosition = team.getStartPosition();
-        Location loc = player.getLocation();
-        loc.setX(startPosition.getX());
-        loc.setY(startPosition.getY());
-        loc.setZ(startPosition.getZ());
-        player.teleport(loc, TeleportCause.COMMAND);
-        player.setBedSpawnLocation(loc, true); // TODO: Is this right?
-
-        // Trooolllooooloo
-        PlayerUtils.sendInfo(player, pluginName, "Viel Spass wuenscht Ugly" + generateRandomBrand() + ".");
-    }
-
-    private Random rand = new Random();
-    private String[] brands = {"Bier", "Saft", "Rasenmaeher", "Grills", "Saurier", "UBoote", "Sterne", "Games", "Soehne", "Toechter"};
-
-    private String generateRandomBrand() {
-        return brands[rand.nextInt(brands.length)];
-    }
 }

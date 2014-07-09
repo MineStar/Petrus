@@ -22,10 +22,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
+import de.minestar.minestarlibrary.utils.PlayerUtils;
+import de.minestar.petrus.common.StartPosition;
 import de.minestar.petrus.common.Team;
 import de.minestar.petrus.core.PetrusCore;
 
@@ -39,7 +44,7 @@ public class TeamManager {
 
     public Team getTeamByName(String teamName) {
         for (Team team : teams) {
-            if (teamName.equals(team.getName()))
+            if (teamName.equalsIgnoreCase(team.getName()))
                 return team;
         }
         return null;
@@ -58,6 +63,47 @@ public class TeamManager {
     public void convertToMember(String playerName, Team team) {
         team.convertToMember(playerName);
         update();
+    }
+
+    public void acceptOfflineMember(String offlinePlayerName, Team team) {
+        team.addToPendingMembers(offlinePlayerName);
+        update();
+    }
+
+    public void finishPendingMember(Player player, Team team) {
+        team.finishedPendingMember(player.getName());
+        startGame(player, team);
+        update();
+    }
+
+    public Team pendingMembersTeam(Player player) {
+        for (Team team : teams) {
+            if (team.isPendingMember(player.getName())) {
+                return team;
+            }
+        }
+
+        return null;
+    }
+
+    public void startGame(Player player, Team team) {
+        StartPosition startPosition = team.getStartPosition();
+        Location loc = player.getLocation();
+        loc.setX(startPosition.getX());
+        loc.setY(startPosition.getY());
+        loc.setZ(startPosition.getZ());
+        player.teleport(loc, TeleportCause.COMMAND);
+        player.setBedSpawnLocation(loc, true);
+
+        // Trooolllooooloo
+        PlayerUtils.sendInfo(player, PetrusCore.NAME, "Viel Spass wuenscht Ugly" + generateRandomBrand() + ".");
+    }
+
+    private Random rand = new Random();
+    private String[] brands = {"Bier", "Saft", "Rasenmaeher", "Grills", "Saurier", "UBoote", "Sterne", "Games", "UndSoehne", "UndToechter"};
+
+    private String generateRandomBrand() {
+        return brands[rand.nextInt(brands.length)];
     }
 
     // TODO: Ugly hack to write the complete CONFIG FILE
