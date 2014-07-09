@@ -69,7 +69,7 @@ public class PetrusCommand extends AbstractExtendedCommand {
 
         for (Team tmpTeams : TEAM_MANAGER.getTeams()) {
             if (tmpTeams.isMember(player.getName())) {
-                PlayerUtils.sendError(player, pluginName, "Du bist bereits in einem Team! Gierig!");
+                PlayerUtils.sendError(player, pluginName, "Du bist bereits im Team '" + tmpTeams.getName() + "'!");
                 return;
             }
         }
