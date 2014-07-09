@@ -25,15 +25,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import de.minestar.petrus.common.StartPosition;
-
 public class SpawnProtectionListener implements Listener {
 
-    private StartPosition spawnLocation;
+    private Location spawnLocation;
     private int spawnRadius;
     private String spawnWorldName;
 
-    public SpawnProtectionListener(String spawnWorldName, StartPosition spawnLocation, int spawnRadius) {
+    public SpawnProtectionListener(String spawnWorldName, Location spawnLocation, int spawnRadius) {
         this.spawnWorldName = spawnWorldName;
         this.spawnLocation = spawnLocation;
         this.spawnRadius = spawnRadius;
@@ -61,7 +59,6 @@ public class SpawnProtectionListener implements Listener {
 
         int xDiff = (int) Math.abs(spawnLocation.getX() - blockLocation.getX());
         int zDiff = (int) Math.abs(spawnLocation.getZ() - blockLocation.getZ());
-//        System.out.println(xDiff + " " + zDiff + " " + spawnRadius);
 
         return xDiff <= spawnRadius && zDiff <= spawnRadius;
     }

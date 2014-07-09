@@ -2,3 +2,7 @@ name: Petrus
 main: de.minestar.petrus.core.PetrusCore
 version: ${pom.version}
 depend: [MineStarLibrary, MinestarCore]
+commands:
+    petrus:
+        description: Come to petrus
+        usage: /petrus

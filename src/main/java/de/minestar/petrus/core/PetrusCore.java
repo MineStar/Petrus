@@ -25,36 +25,59 @@ import java.io.Reader;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import de.minestar.minestarlibrary.AbstractCore;
+import de.minestar.minestarlibrary.commands.CommandList;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
+import de.minestar.petrus.commands.PetrusCommand;
 import de.minestar.petrus.configuration.PetrusConfiguration;
 import de.minestar.petrus.listener.SpawnProtectionListener;
+import de.minestar.petrus.team.TeamManager;
 
 public class PetrusCore extends AbstractCore {
 
+    public static Plugin PLUGIN;
+
     public final static String NAME = "Petrus";
+    public static File CONFIG_FILE;
 
     public static PetrusConfiguration CONFIG;
+    public static TeamManager TEAM_MANAGER;
+
+    public static Gson JSON;
 
     public PetrusCore() {
         super(NAME);
+        JSON = new GsonBuilder().setPrettyPrinting().create();
+        PLUGIN = this;
     }
 
     @Override
     protected boolean loadingConfigs(File dataFolder) {
 
-        try (Reader reader = new FileReader(new File(dataFolder, "generalConfig.json"))) {
-            Gson gson = new GsonBuilder().create();
-            CONFIG = gson.fromJson(reader, PetrusConfiguration.class);
-            System.out.println(CONFIG.startPositions());
+        CONFIG_FILE = new File(dataFolder, "generalConfig.json");
+        try (Reader reader = new FileReader(CONFIG_FILE)) {
+            CONFIG = JSON.fromJson(reader, PetrusConfiguration.class);
         } catch (IOException e) {
-            ConsoleUtils.printException(e, NAME, "Error loading generalConfig.json");
+            ConsoleUtils.printException(e, NAME, "Error loading " + CONFIG_FILE);
             return false;
         }
-        // TODO Auto-generated method stub
         return super.loadingConfigs(dataFolder);
+    }
+
+    @Override
+    protected boolean createManager() {
+        TEAM_MANAGER = new TeamManager(CONFIG.teams());
+        return super.createManager();
+    }
+
+    @Override
+    protected boolean createCommands() {
+
+        this.cmdList = new CommandList(NAME, new PetrusCommand("/petrus", "", ""));
+        return super.createCommands();
     }
 
     @Override

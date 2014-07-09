@@ -1,18 +1,90 @@
 {
-    "startPositions": [
-        {"team": "Yellow",  "x": "-1301.50",   "y": "64.50", "z": "1675.50"},
-        {"team": "Red",     "x": "-1096.50",   "y": "64.50", "z": "1472.50"},
-        {"team": "Orange",  "x": "-1103.50",   "y": "64.50", "z": "1656.50"},
-        {"team": "Green",   "x": "-1479.50",   "y": "64.50", "z": "1620.50"},
-        {"team": "Blue",    "x": "-1498.50",   "y": "64.50", "z": "1466.50"},
-        {"team": "Pink",    "x": "-1473.50",   "y": "64.50", "z": "1301.50"},
-        {"team": "Purple",  "x": "-1287.50",   "y": "64.50", "z": "1269.50"},
-        {"team": "Black",   "x": "-1096.50",   "y": "64.50", "z": "1284.50"}
-    ],
     "spawnPosition": {
-        "team": "Spawn",    "x": "-1298.50","y": "64.50", "z": "1473.50" 
+        "x": "-1298.50","y": "64.50", "z": "1473.50" 
     },
     "spawnRadius": "5",
-    "spawnWorldName": "world"
+    "spawnWorldName": "world",
+    "teams": [ {
+            "name": "Yellow",
+            "startPosition": {
+                "x": "-1301.50",
+                "y": "64.50",
+                "z": "1675.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }, {
+            "name": "Red",
+            "startPosition": {
+                "x": "-1096.50",
+                "y": "64.50",
+                "z": "1472.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }, {
+            "name": "Orange",
+            "startPosition": {
+                "x": "-1103.50",
+                "y": "64.50",
+                "z": "1656.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }, {
+            "name": "Green",
+            "startPosition": {
+                "x": "-1479.50",
+                "y": "64.50",
+                "z": "1620.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }, {
+            "name": "Blue",
+            "startPosition": {
+                "x": "-1498.50",
+                "y": "64.50",
+                "z": "1466.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }, {
+            "name": "Pink",
+            "startPosition": {
+                "x": "-1473.50",
+                "y": "64.50",
+                "z": "1301.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }, {
+            "name": "Purple",
+            "startPosition": {
+                "x": "-1287.50",
+                "y": "64.50",
+                "z": "1269.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }, {
+            "name": "Black",
+            "startPosition": {
+                "x": "-1096.50",
+                "y": "64.50",
+                "z": "1284.50"
+            },
+            "leaderName": "",
+            "members": [],
+            "aspirants": []
+        }
+    ]
 
 }

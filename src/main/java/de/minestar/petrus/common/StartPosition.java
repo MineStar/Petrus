@@ -19,19 +19,12 @@
 package de.minestar.petrus.common;
 
 public class StartPosition {
-
-    private String team;
-
     private double x;
     private double y;
     private double z;
 
     protected StartPosition() {
         // For serialization
-    }
-
-    public String getTeam() {
-        return team;
     }
 
     public double getX() {
@@ -48,7 +41,7 @@ public class StartPosition {
 
     @Override
     public String toString() {
-        return "StartPosition [team=" + team + ", x=" + x + ", y=" + y + ", z=" + z + "]";
+        return "StartPosition [x=" + x + ", y=" + y + ", z=" + z + "]";
     }
 
 }

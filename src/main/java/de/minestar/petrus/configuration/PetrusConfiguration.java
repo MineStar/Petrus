@@ -20,32 +20,34 @@ package de.minestar.petrus.configuration;
 
 import java.util.List;
 
-import de.minestar.petrus.common.StartPosition;
+import org.bukkit.Location;
+
+import de.minestar.petrus.common.Team;
 
 public class PetrusConfiguration {
-
+    
     private PetrusConfiguration() {
         // For Serialization
     }
 
-    private StartPosition spawnPosition;
+    private Location spawnPosition;
     private int spawnRadius;
     private String spawnWorldName;
+    
+    private List<Team> teams;
 
-    private List<StartPosition> startPositions;
-
-    public List<StartPosition> startPositions() {
-        return startPositions;
-    }
-
-    public StartPosition spawnPosition() {
-        return spawnPosition;
+    public List<Team> teams() {
+        return teams;
     }
     
+    public Location spawnPosition() {
+        return spawnPosition;
+    }
+
     public int spawnRadius() {
         return spawnRadius;
     }
-    
+
     public String spawnWorldName() {
         return spawnWorldName;
     }
