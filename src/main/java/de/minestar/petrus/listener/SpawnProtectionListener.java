@@ -23,7 +23,6 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 public class SpawnProtectionListener implements Listener {
 
@@ -40,12 +39,6 @@ public class SpawnProtectionListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (isAtSpawn(event.getBlock()))
-            event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.hasBlock() && isAtSpawn(event.getClickedBlock()))
             event.setCancelled(true);
     }
 
