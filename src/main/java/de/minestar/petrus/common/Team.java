@@ -21,12 +21,13 @@ package de.minestar.petrus.common;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class Team {
 
     private String name;
-    private StartPosition startPosition;
+    private Location startPosition;
 
     private String leaderName;
     private Set<String> members;
@@ -51,8 +52,8 @@ public class Team {
      * @return The start position of the team, where every player is teleported
      *         to after choosing this team.
      */
-    public StartPosition getStartPosition() {
-        return startPosition;
+    public Location getStartPosition() {
+        return startPosition.clone();
     }
 
     /**

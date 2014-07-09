@@ -16,32 +16,26 @@
  * along with Petrus.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.minestar.petrus.common;
+package de.minestar.petrus.listener;
 
-public class StartPosition {
-    private double x;
-    private double y;
-    private double z;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-    protected StartPosition() {
-        // For serialization
+public class SpawnDeathListener implements Listener {
+
+    private Location spawnLocation;
+
+    public SpawnDeathListener(Location spawnLocation) {
+        this.spawnLocation = spawnLocation;
     }
 
-    public double getX() {
-        return x;
+    public void onPlayerJoinEvent(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPlayedBefore()) {
+            player.teleport(spawnLocation, TeleportCause.PLUGIN);
+        }
     }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    @Override
-    public String toString() {
-        return "StartPosition [x=" + x + ", y=" + y + ", z=" + z + "]";
-    }
-
 }

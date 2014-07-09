@@ -23,9 +23,10 @@ import java.util.List;
 import org.bukkit.Location;
 
 import de.minestar.petrus.common.Team;
+import de.minestar.petrus.core.PetrusCore;
 
 public class PetrusConfiguration {
-    
+
     private PetrusConfiguration() {
         // For Serialization
     }
@@ -33,15 +34,17 @@ public class PetrusConfiguration {
     private Location spawnPosition;
     private int spawnRadius;
     private String spawnWorldName;
-    
+
     private List<Team> teams;
 
     public List<Team> teams() {
         return teams;
     }
-    
+
     public Location spawnPosition() {
-        return spawnPosition;
+        Location loc = spawnPosition.clone();
+        loc.setWorld(PetrusCore.SPAWN_WORLD);
+        return loc;
     }
 
     public int spawnRadius() {

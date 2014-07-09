@@ -30,7 +30,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
-import de.minestar.petrus.common.StartPosition;
 import de.minestar.petrus.common.Team;
 import de.minestar.petrus.core.PetrusCore;
 
@@ -87,13 +86,13 @@ public class TeamManager {
     }
 
     public void startGame(Player player, Team team) {
-        StartPosition startPosition = team.getStartPosition();
-        Location loc = player.getLocation();
-        loc.setX(startPosition.getX());
-        loc.setY(startPosition.getY());
-        loc.setZ(startPosition.getZ());
-        player.teleport(loc, TeleportCause.COMMAND);
-        player.setBedSpawnLocation(loc, true);
+        Location startPosition = team.getStartPosition();
+        startPosition.setX(startPosition.getX());
+        startPosition.setY(startPosition.getY());
+        startPosition.setZ(startPosition.getZ());
+        startPosition.setWorld(PetrusCore.SPAWN_WORLD);
+        player.teleport(startPosition, TeleportCause.COMMAND);
+        player.setBedSpawnLocation(startPosition, true);
 
         // Trooolllooooloo
         PlayerUtils.sendInfo(player, PetrusCore.NAME, "Viel Spass wuenscht Ugly" + generateRandomBrand() + ".");
