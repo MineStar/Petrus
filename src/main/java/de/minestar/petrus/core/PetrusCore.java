@@ -36,6 +36,7 @@ import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.petrus.commands.PetrusCommand;
 import de.minestar.petrus.configuration.PetrusConfiguration;
 import de.minestar.petrus.listener.JoinListener;
+import de.minestar.petrus.listener.RespawnListener;
 import de.minestar.petrus.listener.SpawnDeathListener;
 import de.minestar.petrus.listener.SpawnProtectionListener;
 import de.minestar.petrus.team.TeamManager;
@@ -50,12 +51,10 @@ public class PetrusCore extends AbstractCore {
     public static PetrusConfiguration CONFIG;
 
     public static World SPAWN_WORLD;
-    
+
     public static TeamManager TEAM_MANAGER;
 
     public static Gson JSON;
-
-    public static final String META_DATA_INVITATION_ACCEPTED = "acceptedInvitation";
 
     public PetrusCore() {
         super(NAME);
@@ -95,6 +94,7 @@ public class PetrusCore extends AbstractCore {
         pm.registerEvents(new SpawnProtectionListener(CONFIG.spawnWorldName(), CONFIG.spawnPosition(), CONFIG.spawnRadius()), this);
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new SpawnDeathListener(CONFIG.spawnPosition()), this);
+        pm.registerEvents(new RespawnListener(), this);
 
         return true;
     }

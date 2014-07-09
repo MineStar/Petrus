@@ -48,6 +48,14 @@ public class TeamManager {
         }
         return null;
     }
+    
+    public Team getPlayersTeam(String player) {
+        for(Team team : teams) {
+            if (team.isMember(player))
+                return team;
+        }
+        return null;
+    }
 
     public void setTeamLeader(Player player, Team team) {
         team.becomeLeader(player);
@@ -92,6 +100,7 @@ public class TeamManager {
         startPosition.setZ(startPosition.getZ());
         startPosition.setWorld(PetrusCore.SPAWN_WORLD);
         player.teleport(startPosition, TeleportCause.COMMAND);
+        
         player.setBedSpawnLocation(startPosition, true);
 
         // Trooolllooooloo

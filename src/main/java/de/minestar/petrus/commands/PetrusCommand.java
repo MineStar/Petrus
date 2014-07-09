@@ -49,9 +49,16 @@ public class PetrusCommand extends AbstractExtendedCommand {
     }
 
     private void showTeams(Player player) {
-        PlayerUtils.sendInfo(player, pluginName, "Zur Auswahl '/petrus TEAMNAME' eingeben");
-        PlayerUtils.sendInfo(player, pluginName, "Beispiel: '/petrus yellow'");
+
+        Team tmpTeam = TEAM_MANAGER.getPlayersTeam(player.getName());
+        if (tmpTeam != null) {
+            PlayerUtils.sendInfo(player, pluginName, "Du bist im Team '" + tmpTeam.getName() + "'!");
+        } else {
+            PlayerUtils.sendInfo(player, pluginName, "Zur Auswahl '/petrus TEAMNAME' eingeben");
+            PlayerUtils.sendInfo(player, pluginName, "Beispiel: '/petrus yellow'");
+        }
         PlayerUtils.sendInfo(player, pluginName, "=======================================");
+
         List<Team> teams = TEAM_MANAGER.getTeams();
         for (Team team : teams) {
             StringBuilder sBuilder = new StringBuilder();
@@ -67,11 +74,10 @@ public class PetrusCommand extends AbstractExtendedCommand {
 
     private void chooseTeam(Player player, String teamName) {
 
-        for (Team tmpTeams : TEAM_MANAGER.getTeams()) {
-            if (tmpTeams.isMember(player.getName())) {
-                PlayerUtils.sendError(player, pluginName, "Du bist bereits im Team '" + tmpTeams.getName() + "'!");
-                return;
-            }
+        Team tmpTeam = TEAM_MANAGER.getPlayersTeam(player.getName());
+        if (tmpTeam != null) {
+            PlayerUtils.sendError(player, pluginName, "Du bist bereits im Team '" + tmpTeam.getName() + "'!");
+            return;
         }
 
         Team team = TEAM_MANAGER.getTeamByName(teamName);
@@ -89,7 +95,6 @@ public class PetrusCommand extends AbstractExtendedCommand {
             TEAM_MANAGER.startGame(player, team);
         }
     }
-
     private void becomeAspirant(Player player, Team team) {
         PlayerUtils.sendInfo(player, pluginName, "Team '" + team.getName() + "' hat als Anfuhrer '" + team.getLeaderName() + "'.");
         PlayerUtils.sendInfo(player, pluginName, "Ihm wurde eine Einladung gesendet. Bitte warte, bis er diese annimmt!");
