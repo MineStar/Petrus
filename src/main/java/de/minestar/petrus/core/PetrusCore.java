@@ -166,6 +166,10 @@ public class PetrusCore extends AbstractCore {
     @Override
     protected boolean commonDisable() {
         try {
+            // Store last save data in queue in database before shutdown
+            blockBreakQueue.flush();
+            blockPlaceQueue.flush();
+
             databaseConnection.close();
         } catch (Exception e) {
             ConsoleUtils.printException(e, NAME, "Closing database session");
