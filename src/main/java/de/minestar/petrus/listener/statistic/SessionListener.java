@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.j256.ormlite.dao.Dao;
@@ -48,7 +48,7 @@ public class SessionListener implements Listener {
     private Location loc = new Location(null, 0.0, 0.0, 0.0);
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onPlayerLogin(PlayerLoginEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         player.getLocation(loc);
 
