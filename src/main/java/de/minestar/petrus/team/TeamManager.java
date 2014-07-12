@@ -143,7 +143,7 @@ public class TeamManager {
         try (Writer w = new FileWriter(teamFile)) {
             Teams temponaryHack = new Teams();
             temponaryHack.teams = teams;
-            PetrusCore.JSON.toJson(temponaryHack, Teams.class);
+            PetrusCore.JSON.toJson(temponaryHack, w);
         } catch (IOException e) {
             ConsoleUtils.printException(e, PetrusCore.NAME, "Can't update config");
         }
