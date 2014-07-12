@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -29,6 +30,12 @@ import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.db.MysqlDatabaseType;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
@@ -39,7 +46,17 @@ import de.minestar.petrus.listener.JoinListener;
 import de.minestar.petrus.listener.RespawnListener;
 import de.minestar.petrus.listener.SpawnDeathListener;
 import de.minestar.petrus.listener.SpawnProtectionListener;
+import de.minestar.petrus.listener.statistic.BlockChangeListener;
+import de.minestar.petrus.listener.statistic.DeathListener;
+import de.minestar.petrus.listener.statistic.SessionListener;
+import de.minestar.petrus.statistics.BlockBreakStatistic;
+import de.minestar.petrus.statistics.BlockPlaceStatistic;
+import de.minestar.petrus.statistics.EntityDeathStatistic;
+import de.minestar.petrus.statistics.LoginStatistic;
+import de.minestar.petrus.statistics.LogoutStatistic;
+import de.minestar.petrus.statistics.PlayerDeathStatistic;
 import de.minestar.petrus.team.TeamManager;
+import de.minestar.petrus.threads.DatabaseConsumer;
 
 public class PetrusCore extends AbstractCore {
 
@@ -54,7 +71,12 @@ public class PetrusCore extends AbstractCore {
 
     public static TeamManager TEAM_MANAGER;
 
+    private ConnectionSource databaseConnection;
+
     public static Gson JSON;
+
+    private DatabaseConsumer<BlockBreakStatistic> blockBreakQueue;
+    private DatabaseConsumer<BlockPlaceStatistic> blockPlaceQueue;
 
     public PetrusCore() {
         super(NAME);
@@ -78,7 +100,20 @@ public class PetrusCore extends AbstractCore {
 
     @Override
     protected boolean createManager() {
+
         TEAM_MANAGER = new TeamManager(CONFIG.teams());
+        try {
+
+            MysqlDatabaseType type = new MysqlDatabaseType();
+            // use myISAM , because we don't need things like transaction safe
+            // stores
+            type.setCreateTableSuffix("ENGINE=MyISAM");
+            // TODO: Read connection infos from config
+            databaseConnection = new JdbcConnectionSource("jdbc:mysql://192.168.1.29:3306/petrus?autoReconnect=true", "petrus", "1q2w3e4r", type);
+//            databaseConnection.
+        } catch (SQLException e) {
+            ConsoleUtils.printException(e, NAME, "Can't open database connection");
+        }
         return super.createManager();
     }
 
@@ -96,6 +131,45 @@ public class PetrusCore extends AbstractCore {
         pm.registerEvents(new SpawnDeathListener(CONFIG.spawnPosition()), this);
         pm.registerEvents(new RespawnListener(), this);
 
+        // statistic events
+        try {
+            // Login and Logout Statistics
+            TableUtils.createTableIfNotExists(databaseConnection, LoginStatistic.class);
+            TableUtils.createTableIfNotExists(databaseConnection, LogoutStatistic.class);
+            pm.registerEvents(new SessionListener(DaoManager.createDao(databaseConnection, LoginStatistic.class), DaoManager.createDao(databaseConnection, LogoutStatistic.class)), this);
+
+            // Death statistics
+            TableUtils.createTableIfNotExists(databaseConnection, PlayerDeathStatistic.class);
+            TableUtils.createTableIfNotExists(databaseConnection, EntityDeathStatistic.class);
+            pm.registerEvents(new DeathListener(DaoManager.createDao(databaseConnection, PlayerDeathStatistic.class), DaoManager.createDao(databaseConnection, EntityDeathStatistic.class)), this);
+
+            // Block break and place statistics
+            blockBreakQueue = new DatabaseConsumer<BlockBreakStatistic>(DaoManager.createDao(databaseConnection, BlockBreakStatistic.class));
+            blockPlaceQueue = new DatabaseConsumer<BlockPlaceStatistic>(DaoManager.createDao(databaseConnection, BlockPlaceStatistic.class));
+
+            TableUtils.createTableIfNotExists(databaseConnection, BlockBreakStatistic.class);
+            TableUtils.createTableIfNotExists(databaseConnection, BlockPlaceStatistic.class);
+            pm.registerEvents(new BlockChangeListener(blockBreakQueue, blockPlaceQueue), this);
+        } catch (Exception e) {
+            ConsoleUtils.printException(e, NAME, "Creating statistic listeners!");
+        }
         return true;
+    }
+
+    @Override
+    protected boolean createThreads() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PLUGIN, blockBreakQueue, 20 * 10, 20 * 5);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PLUGIN, blockPlaceQueue, 20 * 10, 20 * 5);
+        return super.createThreads();
+    }
+
+    @Override
+    protected boolean commonDisable() {
+        try {
+            databaseConnection.close();
+        } catch (Exception e) {
+            ConsoleUtils.printException(e, NAME, "Closing database session");
+        }
+        return super.commonDisable();
     }
 }
