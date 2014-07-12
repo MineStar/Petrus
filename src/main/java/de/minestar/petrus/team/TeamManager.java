@@ -18,9 +18,13 @@
 
 package de.minestar.petrus.team;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -35,10 +39,31 @@ import de.minestar.petrus.core.PetrusCore;
 
 public class TeamManager {
 
+    private static final String TEAM_FILENAME = "teams.json";
+
+    private File teamFile;
+
     private List<Team> teams;
 
-    public TeamManager(List<Team> teams) {
-        this.teams = teams;
+    public TeamManager(File dataFolder) {
+        this.teams = loadTeams(dataFolder);
+    }
+
+    private List<Team> loadTeams(File dataFolder) {
+        this.teamFile = new File(dataFolder, TEAM_FILENAME);
+        try (Reader r = new FileReader(teamFile)) {
+            return PetrusCore.JSON.fromJson(r, Teams.class).teams;
+        } catch (Exception e) {
+            ConsoleUtils.printException(e, PetrusCore.NAME, "Loading teams");
+            return Collections.emptyList();
+        }
+    }
+
+    // Ugly hack to serialze a list of items, because of guava10 in mcpc does
+    // not support this...
+    public static class Teams {
+        private List<Team> teams;
+
     }
 
     public Team getTeamByName(String teamName) {
@@ -48,9 +73,9 @@ public class TeamManager {
         }
         return null;
     }
-    
+
     public Team getPlayersTeam(String player) {
-        for(Team team : teams) {
+        for (Team team : teams) {
             if (team.isMember(player))
                 return team;
         }
@@ -100,7 +125,7 @@ public class TeamManager {
         startPosition.setZ(startPosition.getZ());
         startPosition.setWorld(PetrusCore.SPAWN_WORLD);
         player.teleport(startPosition, TeleportCause.COMMAND);
-        
+
         player.setBedSpawnLocation(startPosition, true);
 
         // Trooolllooooloo
@@ -114,12 +139,11 @@ public class TeamManager {
         return brands[rand.nextInt(brands.length)];
     }
 
-    // TODO: Ugly hack to write the complete CONFIG FILE
-    // Need to find a way to serialize lists with GSON
-    // Throws error using MCPC+
     private void update() {
-        try (Writer w = new FileWriter(PetrusCore.CONFIG_FILE)) {
-            PetrusCore.JSON.toJson(PetrusCore.CONFIG, w);
+        try (Writer w = new FileWriter(teamFile)) {
+            Teams temponaryHack = new Teams();
+            temponaryHack.teams = teams;
+            PetrusCore.JSON.toJson(temponaryHack, Teams.class);
         } catch (IOException e) {
             ConsoleUtils.printException(e, PetrusCore.NAME, "Can't update config");
         }

@@ -101,7 +101,7 @@ public class PetrusCore extends AbstractCore {
     @Override
     protected boolean createManager() {
 
-        TEAM_MANAGER = new TeamManager(CONFIG.teams());
+        TEAM_MANAGER = new TeamManager(getDataFolder());
         try {
 
             MysqlDatabaseType type = new MysqlDatabaseType();
