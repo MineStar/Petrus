@@ -18,37 +18,41 @@
 
 package de.minestar.petrus.configuration;
 
-import org.bukkit.Location;
+public class DatabaseConfiguration {
 
-import de.minestar.petrus.core.PetrusCore;
+    private String host;
+    private int port;
+    private String database;
+    private String user;
+    private String password;
 
-public class PetrusConfiguration {
-
-    private PetrusConfiguration() {
+    public DatabaseConfiguration() {
         // For Serialization
     }
 
-    private Location spawnPosition;
-    private int spawnRadius;
-    private String spawnWorldName;
-
-    private DatabaseConfiguration dbConfig;
-
-    public Location spawnPosition() {
-        Location loc = spawnPosition.clone();
-        loc.setWorld(PetrusCore.SPAWN_WORLD);
-        return loc;
+    public String getHost() {
+        return host;
     }
 
-    public int spawnRadius() {
-        return spawnRadius;
+    public int getPort() {
+        return port;
     }
 
-    public String spawnWorldName() {
-        return spawnWorldName;
+    public String getDatabase() {
+        return database;
     }
 
-    public DatabaseConfiguration getDbConfig() {
-        return dbConfig;
+    public String getUser() {
+        return user;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String toString() {
+        return "DatabaseConfiguration [host=" + host + ", port=" + port + ", database=" + database + ", user=" + user + ", password=" + password + "]";
+    }
+
 }

@@ -41,6 +41,7 @@ import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.petrus.commands.PetrusCommand;
+import de.minestar.petrus.configuration.DatabaseConfiguration;
 import de.minestar.petrus.configuration.PetrusConfiguration;
 import de.minestar.petrus.listener.JoinListener;
 import de.minestar.petrus.listener.RespawnListener;
@@ -108,9 +109,9 @@ public class PetrusCore extends AbstractCore {
             // use myISAM , because we don't need things like transaction safe
             // stores
             type.setCreateTableSuffix("ENGINE=MyISAM");
-            // TODO: Read connection infos from config
-            databaseConnection = new JdbcConnectionSource("jdbc:mysql://192.168.1.29:3306/petrus?autoReconnect=true", "petrus", "1q2w3e4r", type);
-//            databaseConnection.
+
+            DatabaseConfiguration dbConfig = CONFIG.getDbConfig();
+            databaseConnection = new JdbcConnectionSource("jdbc:mysql://" + dbConfig.getHost() + ":" + dbConfig.getPort() + "/" + dbConfig.getDatabase() + "?autoReconnect=true", dbConfig.getUser(), dbConfig.getPassword(), type);
         } catch (SQLException e) {
             ConsoleUtils.printException(e, NAME, "Can't open database connection");
         }
